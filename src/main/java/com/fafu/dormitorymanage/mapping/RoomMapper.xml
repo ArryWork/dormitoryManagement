@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fafu.dormitorymanage.dao.RoomMapper" >
+  <resultMap id="BaseResultMap" type="com.fafu.dormitorymanage.pojo.Room" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="dormitory_id" property="dormitoryId" jdbcType="INTEGER" />
+    <result column="head_id" property="headId" jdbcType="INTEGER" />
+    <result column="room_ord" property="roomOrd" jdbcType="INTEGER" />
+    <result column="dormitory" property="dormitory" jdbcType="VARCHAR" />
+    <result column="head" property="head" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    t.id, t.dormitory_id as dormitoryId, t.head_id as headId , t.room_ord as roomOrd
+  </sql>
+  <insert id="insert" parameterType="com.fafu.dormitorymanage.pojo.Room" >
+    insert into room (id, dormitory_id, head_id, 
+      room_ord)
+    values (#{id,jdbcType=INTEGER}, #{dormitory_id,jdbcType=INTEGER}, #{head_id,jdbcType=INTEGER}, 
+      #{room_ord,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fafu.dormitorymanage.pojo.Room" >
+    insert into room
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dormitory_id != null" >
+        dormitory_id,
+      </if>
+      <if test="head_id != null" >
+        head_id,
+      </if>
+      <if test="room_ord != null" >
+        room_ord,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dormitory_id != null" >
+        #{dormitory_id,jdbcType=INTEGER},
+      </if>
+      <if test="head_id != null" >
+        #{head_id,jdbcType=INTEGER},
+      </if>
+      <if test="room_ord != null" >
+        #{room_ord,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fafu.dormitorymanage.pojo.Room" >
+    update room
+    <set >
+      <if test="dormitory_id != null" >
+        dormitory_id = #{dormitory_id,jdbcType=INTEGER},
+      </if>
+      <if test="head_id != null" >
+        head_id = #{head_id,jdbcType=INTEGER},
+      </if>
+      <if test="room_ord != null" >
+        room_ord = #{room_ord,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getRoomList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>,
+    d.name as dormitory,s.name as head
+    from room t
+    left join dormitory d on d.id = t.dormitory_id
+    left join student s on s.id = t.head_id
+    <if test="dormitoryId != null">
+      where t.dormitory_id = #{dormitoryId}
+    </if>
+  </select>
+  <update id="setHead">
+    update room r set r.head_id = #{roomHeadId} where r.id = #{roomId}
+  </update>
+</mapper>

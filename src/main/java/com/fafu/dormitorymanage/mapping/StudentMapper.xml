@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fafu.dormitorymanage.dao.StudentMapper" >
+  <resultMap id="BaseResultMap" type="com.fafu.dormitorymanage.pojo.Student" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="dormitory_id" property="dormitoryId" jdbcType="INTEGER" />
+    <result column="room_ord" property="roomOrd" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="is_head" property="isHead" jdbcType="CHAR" />
+    <result column="student_no" property="studentNo" jdbcType="INTEGER" />
+    <result column="major" property="major" jdbcType="VARCHAR" />
+    <result column="grade" property="grade" jdbcType="VARCHAR" />
+    <result column="class_no" property="classNo" jdbcType="VARCHAR" />
+    <result column="dormitoryname" property="dormitoryName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, dormitory_id, room_ord, name, is_head, student_no, major, grade, class_no
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from student
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fafu.dormitorymanage.pojo.Student" >
+    insert into student ( dormitory_id, room_ord,
+      name, is_head, student_no, 
+      major, grade, class_no
+      )
+    values ( #{dormitoryId,jdbcType=INTEGER}, #{roomOrd,jdbcType=INTEGER},
+      #{name,jdbcType=VARCHAR}, #{isHead,jdbcType=CHAR}, #{studentNo,jdbcType=INTEGER},
+      #{major,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, #{classNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fafu.dormitorymanage.pojo.Student" >
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dormitory_id != null" >
+        dormitory_id,
+      </if>
+      <if test="room_ord != null" >
+        room_ord,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="is_head != null" >
+        is_head,
+      </if>
+      <if test="student_no != null" >
+        student_no,
+      </if>
+      <if test="major != null" >
+        major,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+      <if test="class_no != null" >
+        class_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dormitory_id != null" >
+        #{dormitory_id,jdbcType=INTEGER},
+      </if>
+      <if test="room_ord != null" >
+        #{room_ord,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="is_head != null" >
+        #{is_head,jdbcType=CHAR},
+      </if>
+      <if test="student_no != null" >
+        #{student_no,jdbcType=INTEGER},
+      </if>
+      <if test="major != null" >
+        #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="class_no != null" >
+        #{class_no,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fafu.dormitorymanage.pojo.Student" >
+    update student
+    <set >
+      <if test="dormitoryId != null" >
+        dormitory_id = #{dormitoryId,jdbcType=INTEGER},
+      </if>
+      <if test="roomOrd != null" >
+        room_ord = #{roomOrd,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="isHead != null" >
+        is_head = #{isHead,jdbcType=CHAR},
+      </if>
+      <if test="studentNo != null" >
+        student_no = #{studentNo,jdbcType=INTEGER},
+      </if>
+      <if test="major != null" >
+        major = #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="classNo != null" >
+        class_no = #{classNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fafu.dormitorymanage.pojo.Student" >
+    update student
+    set dormitory_id = #{dormitory_id,jdbcType=INTEGER},
+      room_ord = #{room_ord,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      is_head = #{is_head,jdbcType=CHAR},
+      student_no = #{student_no,jdbcType=INTEGER},
+      major = #{major,jdbcType=VARCHAR},
+      grade = #{grade,jdbcType=VARCHAR},
+      class_no = #{class_no,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 添加导入的学生-->
+  <insert id="addNewStudent" parameterType="com.fafu.dormitorymanage.pojo.Student">
+      insert into student(dormitory_id, room_ord, name, is_head, student_no, major, grade, class_no)
+      value
+    <foreach collection="students" index="index" item="student" open="(" separator="),(" close=")">
+      #{student.dormitoryId},#{student.roomOrd},
+      #{student.name},#{student.isHead},#{student.studentNo},
+      #{student.major},#{student.grade},#{student.classNo}
+     </foreach>
+  </insert>
+
+  <select id="getAllStudent"  resultMap="BaseResultMap" parameterType="com.fafu.dormitorymanage.pojo.Student">
+    select t.id, t.dormitory_id, t.room_ord, t.name, t.is_head, t.student_no, t.major, t.grade, t.class_no ,d.name as dormitoryname
+    from student t
+    left join dormitory d on d.id = t.dormitory_id
+    where 1=1
+    <if test="dormitoryId != null and dormitoryId != ''" >
+     and t.dormitory_id = #{dormitoryId,jdbcType=INTEGER}
+    </if>
+    <if test="roomOrd != null and roomOrd != ''" >
+     and t.room_ord =  #{roomOrd,jdbcType=INTEGER}
+    </if>
+    <if test="name != null and name != ''" >
+     and t.name CONCAT('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="isHead != null and isHead != '' and isHead != 2" >
+     and t.is_head = #{isHead,jdbcType=CHAR}
+    </if>
+    <if test="studentNo != null and studentNo != ''" >
+     and t.student_no = #{studentNo,jdbcType=INTEGER}
+    </if>
+    <if test="major != null and major != ''" >
+     and t.major = #{major,jdbcType=VARCHAR}
+    </if>
+    <if test="grade != 0" >
+      and t.grade = #{grade,jdbcType=VARCHAR}
+    </if>
+    <if test="classNo != 0" >
+     and t.class_no = #{classNo,jdbcType=VARCHAR}
+    </if>
+
+
+  </select>
+
+  <select id="getSnos" resultType="String">
+    select distinct t.student_no from student t;
+  </select>
+
+  <select id="getStudentsByRoomId" resultMap="BaseResultMap">
+    select t.id, t.dormitory_id, t.room_ord, t.name, t.is_head, t.student_no, t.major, t.grade, t.class_no ,d.name as dormitoryname
+    from student t
+    left join dormitory d on d.id = t.dormitory_id
+    where t.dormitory_id = #{dormitoryId} and t.room_ord = #{roomOrd}
+  </select>
+  <select id="getStudentByNo" resultMap="BaseResultMap">
+     select t.id, t.dormitory_id, t.room_ord, t.name, t.is_head, t.student_no, t.major, t.grade, t.class_no ,d.name as dormitoryname
+    from student t
+    left join dormitory d on d.id = t.dormitory_id
+    where t.student_no = #{studentNo}
+  </select>
+  <update id="updateHead">
+    update student s join room r on r.id = #{roomId}
+    set s.is_head = (case when s.id = #{roomHeadId} then 1 else 0 end)
+    where r.dormitory_id = s.dormitory_id and r.room_ord = s.room_ord
+  </update>
+</mapper>

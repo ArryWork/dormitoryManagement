@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fafu.dormitorymanage.dao.VisitorMapper" >
+  <resultMap id="BaseResultMap" type="com.fafu.dormitorymanage.pojo.Visitor" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="relation" property="relation" jdbcType="VARCHAR" />
+    <result column="id_card_no" property="idCardNo" jdbcType="VARCHAR" />
+    <result column="visit_status" property="visitStatus" jdbcType="INTEGER" />
+    <result column="visit_reason" property="visitReason" jdbcType="VARCHAR" />
+    <result column="visit_date" property="visitDate" jdbcType="TIMESTAMP" />
+    <result column="visit_dormitory_id" property="visitDormitoryId" jdbcType="INTEGER" />
+    <result column="visit_student_id" property="visitStudentId" jdbcType="INTEGER" />
+    <result column="student" property="student"  jdbcType="VARCHAR"/>
+    <result column="dormitory" property="dormitory" jdbcType="VARCHAR"/>
+    <result column="visit_room_ord" property="visitRoomOrd" jdbcType="INTEGER"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    t.id, t.name, t.relation, t.id_card_no, t.visit_status, t.visit_reason, t.visit_date,t.visit_dormitory_id,
+    visit_room_ord,t.visit_student_id
+  </sql>
+  <select id="getAllVisitor" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />,s.name as student,
+    d.name as dormitory
+    from visitor t
+    left join student s on s.id = t.visit_student_id
+    left join dormitory d on d.id = t.visit_dormitory_id
+    order by t.visit_date desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from visitor
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fafu.dormitorymanage.pojo.Visitor" >
+    insert into visitor (name, relation,
+      id_card_no, visit_status, visit_reason, 
+      visit_date,visit_dormitory_id,visit_room_ord,visit_student_id)
+    values ( #{name,jdbcType=VARCHAR}, #{relation,jdbcType=VARCHAR},
+      #{idCardNo,jdbcType=VARCHAR}, #{visitStatus,jdbcType=INTEGER}, #{visitReason,jdbcType=VARCHAR},
+      #{visitDate,jdbcType=TIMESTAMP},#{visitDormitoryId,jdbcType=INTEGER},#{visitRoomOrd,jdbcType=INTEGER},#{visitStudentId,jdbcType=INTEGER})
+  </insert>
+
+  <update id="setVisitStatus" >
+    update visitor v set v.visit_status = #{status} where v.id = #{visitId}
+  </update>
+</mapper>
